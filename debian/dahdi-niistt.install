@@ -1,0 +1,3 @@
+lib/modules/*/dahdi/*
+debian/modules etc/dahdi
+debian/system.conf etc/dahdi

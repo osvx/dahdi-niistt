@@ -1,0 +1,4 @@
+dahdi_tool
+autoconfig.h
+genconf_parameters.sample
+version.c

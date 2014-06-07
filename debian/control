@@ -1,0 +1,21 @@
+Source: dahdi-niistt
+Section: comm
+Priority: optional
+Maintainer: Valentin Yakovenkov <yakovenkov@gmail.com>
+Standards-Version: 3.9.2
+Homepage: http://www.niistt.ru/
+
+Package: dahdi-niistt
+Architecture: linux-any
+#Jmdault 20090601: the init scripts needs the kernel drivers, so we require
+#either the dkms module (preferred) or the source pkg (with module-assistant)
+Conflicts: zaptel
+Replaces: zaptel
+Description: utilities for using the DAHDI kernel modules
+ DAHDI (formly Zaptel) is an interface for telephony devices used by e.g. 
+ the Asterisk PBX software. The dahdi-* packages provide the kernel 
+ DAHDI kernel modules and their required setup environment.
+ .
+ This package includes userspace utilities required to configure DAHDI 
+ modules.
+
