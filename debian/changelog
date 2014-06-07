@@ -1,6 +1,5 @@
-dahdi-niistt (1:2.8.0.1-10-osvx1-projectx1) unstable; urgency=low
+dahdi-niistt (2.8.0.1-10+osvx1+projectx1) unstable; urgency=low
 
-  * OS/VX switch
+  * Port of NIISTT E1 card driver to OS/VX
     
- -- Valentin Yakovenkov <yakovenkov@gmail.com>  Sat, 07 Jun 2014 16:38:37 +0400
-
+ -- Valentin Yakovenkov <yakovenkov@gmail.com>  Sun, 08 Jun 2014 00:35:44 +0400
