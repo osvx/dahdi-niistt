@@ -397,20 +397,32 @@ static irqreturn_t _wcxb_isr(int irq, void *dev_id)
 		if (pending & DESC_UNDERRUN) {
 			u32 reg;
 
+			/* Report the error in case drivers have any custom
+			 * methods for indicating potential data corruption. An
+			 * underrun means data loss in the TDM channel. */
+			if (xb->ops->handle_error)
+				xb->ops->handle_error(xb);
+
 			/* bump latency */
 			spin_lock(&xb->lock);
 
 			if (!xb->flags.latency_locked) {
-				xb->latency++;
-
+				xb->latency = min(xb->latency + 1,
+						  xb->max_latency);
 #ifdef HAVE_RATELIMIT
 				if (__ratelimit(&_underrun_rl)) {
 #else
 				if (printk_ratelimit()) {
 #endif
-					dev_info(&xb->pdev->dev,
-						 "Underrun detected by hardware. Latency bumped to: %dms\n",
-						 xb->latency);
+					if (xb->latency != xb->max_latency) {
+						dev_info(&xb->pdev->dev,
+							 "Underrun detected by hardware. Latency bumped to: %dms\n",
+							 xb->latency);
+					} else {
+						dev_info(&xb->pdev->dev,
+							 "Underrun detected by hardware. Latency at max of %dms.\n",
+							 xb->latency);
+					}
 				}
 			}
 
@@ -602,6 +614,8 @@ int wcxb_init(struct wcxb *xb, const char *board_name, u32 int_mode)
 		return -EINVAL;
 
 	xb->latency = WCXB_DEFAULT_LATENCY;
+	xb->max_latency = WCXB_DEFAULT_MAXLATENCY;
+
 	spin_lock_init(&xb->lock);
 
 	xb->membase = pci_iomap(pdev, 0, 0);

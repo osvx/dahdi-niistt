@@ -118,10 +118,17 @@ static void te13x_handle_transmit(struct wcxb *xb, void *vfp);
 static void te13x_handle_receive(struct wcxb *xb, void *vfp);
 static void te13x_handle_interrupt(struct wcxb *xb, u32 pending);
 
+static void te13x_handle_error(struct wcxb *xb)
+{
+	struct t13x *wc = container_of(xb, struct t13x, xb);
+	wc->ddev->irqmisses++;
+}
+
 static struct wcxb_operations xb_ops = {
 	.handle_receive = te13x_handle_receive,
 	.handle_transmit = te13x_handle_transmit,
 	.handle_interrupt = te13x_handle_interrupt,
+	.handle_error = te13x_handle_error,
 };
 
 /* Maintenance Mode Registers */
@@ -2532,7 +2539,7 @@ static int __devinit te13xp_init_one(struct pci_dev *pdev,
 	wc->xb.pdev = pdev;
 	wc->xb.ops = &xb_ops;
 	wc->xb.debug = &debug;
-	res = wcxb_init(&wc->xb, wc->name, 1);
+	res = wcxb_init(&wc->xb, wc->name, 0);
 	if (res)
 		goto fail_exit;
 
